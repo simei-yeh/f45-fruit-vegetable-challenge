@@ -2,7 +2,12 @@ import prisma from '../../../../lib/prisma'; // Adjust the import based on your 
 
 export async function GET() {
   try {
-    const ingredients = await prisma.ingredient.findMany();
+    const ingredients = await prisma.ingredient.findMany({
+      orderBy: {
+        name: 'asc',
+      },
+    });
+
     return new Response(JSON.stringify(ingredients), { status: 200 });
   } catch (error: unknown) {
     console.log(error);
