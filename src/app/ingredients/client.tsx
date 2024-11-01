@@ -40,15 +40,21 @@ const IngredientsList: React.FC = () => {
         }
         const data: Ingredient[] = await res.json();
         setIngredients(data);
-      } catch (error: any) {
-        setError(error.message);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          // Type guard to check if the error is an instance of Error
+          setError(error.message); // Set the error message if it's an Error
+        } else {
+          setError("An unknown error occurred."); // Fallback for unknown errors
+        }
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchIngredients();
   }, []);
+  
 
   // Handle checkbox change
   const handleCheckboxChange = (id: number) => {
@@ -80,10 +86,14 @@ const IngredientsList: React.FC = () => {
       }
 
       const data: Recipe[] = await res.json();
-      console.log(data);
       setRecipes(data); // Store the fetched recipes in state
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        // Type guard to check if the error is an instance of Error
+        setError(error.message); // Set the error message if it's an Error
+      } else {
+        setError("An unknown error occurred."); // Fallback for unknown errors
+      }
     }
   };
 
