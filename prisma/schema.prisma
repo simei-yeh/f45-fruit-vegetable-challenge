@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+model ingredient {
+  id              Int               @id @default(autoincrement()) // Auto-incrementing ID
+  name            String            // Name of the ingredient
+  is_fruit       Boolean           // 1 for fruit, 0 for not fruit
+  is_vegetable   Boolean           // 1 for vegetable, 0 for not vegetable
+  recipe_ingredients recipe_ingredient[] // Relation to RecipeIngredient
+}
+
+model recipe {
+  id              Int               @id @default(autoincrement()) // Auto-incrementing ID
+  item_name       String            // Name of the recipe
+  recipe_ingredients recipe_ingredient[] // Relation to RecipeIngredient
+  location_id     Int               // Foreign key for Location
+  location        location          @relation(fields: [location_id], references: [id]) // Relation to Location
+}
+
+model recipe_ingredient {
+  id              Int               @id @default(autoincrement()) // Auto-incrementing ID for join table
+  recipe_id       Int               // Foreign key for Recipe
+  ingredient_id   Int               // Foreign key for Ingredient
+  quantity        Int?              // Optional quantity for the ingredient in the recipe
+  recipe          recipe             @relation(fields: [recipe_id], references: [id])
+  ingredient      ingredient         @relation(fields: [ingredient_id], references: [id])
+}
+
+model location {
+  id              Int               @id @default(autoincrement()) // Auto-incrementing ID
+  name            String            // Name of the location
+  recipes         recipe[]          // Relation to Recipe
+}
